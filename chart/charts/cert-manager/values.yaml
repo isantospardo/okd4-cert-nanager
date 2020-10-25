@@ -1,0 +1,29 @@
+# some configuration needs to be shared with other components, it is specified in global values.
+global:
+  # Let's Encrypt configuration. Used to configure LE certificate issuer in cert-manager as well as dns-manager's openshift-acme
+  letsEncrypt:
+    acmeEndpoint: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: ""
+    certManagerClusterIssuerName: letsencrypt
+
+
+clusterIssuerSource:
+  repoURL: ""
+  targetRevision: ""
+
+
+repoURL: https://charts.jetstack.io
+targetRevision: v0.15.2
+
+namespace: ""
+
+acme:
+  dns01:
+    # cert-manager needs to validate the DNS-01 challenges, which we publish only to the external DNS
+    # thus it needs to query the external DNS servers. This requires a specific firewall opening
+    externalServerName: ""
+
+tsigSecret:
+  # secret name where we store the TSIG key value
+  name: ""
+  key: ""

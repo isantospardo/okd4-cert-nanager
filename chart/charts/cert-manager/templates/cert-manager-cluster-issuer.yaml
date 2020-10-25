@@ -1,0 +1,35 @@
+# Wee need a second cert-manager application to create a clusterIssuer
+# This can't be handled by the main cert-manager application as we need the
+# CRDs to be already present before we create the clusterIssuer resource
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-clusterissuer
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: {{ .Values.namespace }}
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: chart/
+    repoURL: {{ .Values.clusterIssuerSource.repoURL }}
+    targetRevision: {{ .Values.clusterIssuerSource.targetRevision | quote }}
+    helm:
+      values: |
+        clusterIssuerName: {{ $.Values.global.letsEncrypt.certManagerClusterIssuerName | quote }}
+        acme:
+          server: {{ .Values.global.letsEncrypt.acmeEndpoint | quote }}
+          email: {{ .Values.global.letsEncrypt.email | quote }}
+          # we must publish DNS-01 challenges to the _external_ DNS views so they are visible to Let's Encrypt servers
+          dns01:
+            tsigKeyName: {{ .Values.global.dns.tsigKeys.external.name | quote }}
+            internalServerName: {{ .Values.global.dns.dnsManagerHost | quote }}
+        tsigSecret:
+          name: {{ .Values.tsigSecret.name }}
+          key: {{ .Values.tsigSecret.key }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

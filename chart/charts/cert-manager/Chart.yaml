@@ -1,0 +1,16 @@
+apiVersion: v2
+name: openshift-cert-manager
+description: Chart to deploy components related to the OpenShift cert-manager
+version: 0.1.0
+appVersion: v0.1.0
+home: https://github.com/jetstack/cert-manager
+icon: https://raw.githubusercontent.com/jetstack/cert-manager/master/logo/logo.png
+keywords:
+- openshift
+- cert-manager
+- letsencrypt
+sources:
+- https://github.com/jetstack/cert-manager
+maintainers:
+- name: ""
+  email: ""
